@@ -1,8 +1,10 @@
 import axios from "axios";
 import React,{useState} from "react";
+import { useLocation } from "react-router-dom";
+import Menu from "./common/Menu";
 
 
-function NoteForm(){
+function ProjectForm(){
     const [authorName, setAuthorName] = useState("");
     const [titleName, setTitleName] = useState("");
 
@@ -22,6 +24,8 @@ function NoteForm(){
 
 
     return(
+        <div>
+        <Menu />
         <form onSubmit={handleSubmit}>
             <div>
                 <label htmlFor="authorName">Author Name</label>
@@ -43,9 +47,10 @@ function NoteForm(){
             </div>
             <button type="submit">Submit</button>
         </form>
+        </div>
     )
 
 
 }
 
-export default NoteForm;
+export default ProjectForm;

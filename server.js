@@ -3,6 +3,7 @@ const db = require('./db');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const { response } = require('express');
 
 const app = express();
 const port = 5000;
@@ -20,27 +21,32 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const SECRET_KEY = 'mysecretkey';
 
 app.post('/api/login', (req, res) => {
-  const { employeeCode, employeePwd } = req.body; 
-  try {
-    db.query('SELECT * FROM login_master where employee_code=? and password=?', [employeeCode, employeePwd], (err, result) => {
 
+  const { employeeCode, employeePwd } = req.body;
+  const token = jwt.sign({ code: employeeCode }, SECRET_KEY);
+
+  try {
+    db.query('SELECT * FROM emp_master where employee_code=? and password=?', 
+    [employeeCode, employeePwd], 
+    (err, result) => {
       if (err) throw err
 
       // check if the employee code and password exists in db
-      if(result.length > 0 ){  
-        const token = jwt.sign({ authenticated: employeeCode }, SECRET_KEY);
-        res.cookie('token', token);
-        res.send("Login successful...");
-      } else {
-        const token = jwt.sign({ authenticated: employeeCode }, SECRET_KEY);
-        res.cookie('token', token);
-        res.send("Invalid username/password...");
-      }
+      if (result.length > 0) {
+        const user = result[0];
+        res.json({'user': user.full_name, 'grade': user.grade ,'token': token});
+      } else if(result.length === 0 ){  
+        res.status(401).json({ error: 'Invalid username or password' });
+      }  
     }); //end of db.query   
   } catch (error) {
     console.log(error);
   }
 });
+
+app.get('/dashboard', (req,res) => {
+  res.send("This is dashboard");
+})
 
 
 app.get('/api/emp', async (req, res) => {
@@ -77,7 +83,7 @@ app.post('/api/notes', async(req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Server listening at http://localhost:${port}`);
   
 });
 

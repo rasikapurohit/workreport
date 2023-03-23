@@ -1,42 +1,45 @@
 import React, {useState} from "react";
 import axios from "axios";
-import {Navigate, Outlet} from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+
 
 const LoginPage = () => {
 
+    const navigate = useNavigate();
+
     const [employeeCode, setEmployeeCode] = useState("");
     const [employeePwd, setEmployeePwd] = useState("");
-
-    const [loginStatus, setLoginStatus] = useState(false);
+    const [isLoggedin, setLoggedIn] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const userData = {employeeCode, employeePwd};
 
     const handleLogin = () => {
         axios.post('http://localhost:5000/api/login', userData)
         .then(response => {
-            console.log(response);
-            if (!response.data) {
-                setLoginStatus( response.data);
-             } else {
-                //console.log(response.data);
-                
-                if (response.data === "Login successful..."){
-                    setLoginStatus(true);
-                    console.log(loginStatus);
-             }
-            }
-
-            // return loginStatus ? <Outlet /> : <EmployeeList/>
-
+            if (response.status === 200) {
+                setLoggedIn(true);                
+                const token = response.data.token;
+                const username = response.data.user;
+                const grade = response.data.grade;
+                // Store the token in local storage or state variable
+                localStorage.setItem('token', token);
+                localStorage.setItem('name', username);
+                localStorage.setItem('grade', grade);
+                navigate('/dashboard');
+             }        
         })//end of then and try
         .catch(error => {
-            console.log(error)
+            setErrorMessage("Invalid credentials");
+            console.error(error)
         });//end of catch
 
     };// end of handlesubmit
 
     return(
 		<div className="container">
+            <h4>{errorMessage}</h4>
+            
       		<h1>Login Page</h1>
 
 			<div className="mb-3 mt-3">
@@ -51,8 +54,6 @@ const LoginPage = () => {
 			</div>
 			
 			<button onClick={handleLogin} className="btn btn-primary">Login</button>
-        <h3>{loginStatus}</h3>
-
     	</div>
 
     )
