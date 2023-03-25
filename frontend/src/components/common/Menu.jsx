@@ -13,8 +13,8 @@ const Menu = () => {
             <Container>
             <Navbar.Brand href="/dashboard">Home</Navbar.Brand>
             <Nav className='me-auto'>
-            <Nav.Link href="/submission">Submit Work Report</Nav.Link>
-            <Nav.Link href="/approve">Approve Work Report</Nav.Link> 
+            <Nav.Link href="/submission">Submit Work Report </Nav.Link>
+            <Nav.Link href="/approve">Approve Work Report </Nav.Link> 
             <Nav.Link href="/report">Reports</Nav.Link>     
             </Nav> 
             <Navbar.Collapse className="justify-content-end">
