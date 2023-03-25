@@ -9,6 +9,7 @@ import Employee from "./components/Employee";
 import NotFound from "./components/NotFound";
 import SubmitReport from "./components/SubmitReport";
 import Dashboard from "./components/common/Dashboard";
+import Report from "./components/Report";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/submission" element={<SubmitReport />}/>
                 <Route path="/dashboard" element={<Dashboard />}/>
                 <Route path="/projects" element={<ProjectForm />}/>
+                <Route path="/report" element={<Report />}/>
 
                 <Route path="*" element={<NotFound/>}/>
 
